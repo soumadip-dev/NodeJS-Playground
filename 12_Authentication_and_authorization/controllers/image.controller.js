@@ -2,7 +2,7 @@ const Image = require('../model/image.model');
 const { uploadToCloudinary } = require('../helper/cloudinary.helper');
 const fs = require('fs').promises;
 
-// Controller to handle image upload
+//* Controller to handle image upload
 const uploadImage = async (req, res) => {
   try {
     // Check if the file is missing in the request object
@@ -46,4 +46,30 @@ const uploadImage = async (req, res) => {
   }
 };
 
-module.exports = { uploadImage };
+//* Controller to fetch all uploaded images
+const fetchImages = async (req, res) => {
+  try {
+    const images = await Image.find({});
+
+    if (!images || images.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No images found 👎',
+        data: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Images fetched successfully ✅',
+      data: images,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Something went wrong',
+    });
+  }
+};
+
+module.exports = { uploadImage, fetchImages };

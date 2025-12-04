@@ -93,7 +93,11 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Change password
+const chnagePassword = async (req, res) => {};
+
 module.exports = {
   registerUser,
   loginUser,
+  chnagePassword,
 };
