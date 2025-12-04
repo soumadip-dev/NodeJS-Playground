@@ -13,20 +13,20 @@ const storage = multer.diskStorage({
 });
 
 // File filter to allow only image files
-const imageFileFilter = (req, file, callback) => {
-  if (file.mimetype.startsWith('image')) {
+const fileFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image') || file.mimetype.startsWith('video')) {
     callback(null, true);
   } else {
-    callback(new Error('Only image files are allowed'));
+    callback(new Error('Only image and video files are allowed'));
   }
 };
 
 // Multer middleware configuration
 const uploadMiddleware = multer({
   storage: storage,
-  fileFilter: imageFileFilter,
+  fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB file size limit
+    fileSize: 200 * 1024 * 1024, // 200 MB file size limit
   },
 });
 
