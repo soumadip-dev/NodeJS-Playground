@@ -1,11 +1,12 @@
 const Image = require('../model/image.model');
 const { uploadToCloudinary } = require('../helper/cloudinary.helper');
 const fs = require('fs').promises;
+const cloudinary = require('../config/cloudinary.config.js');
 
-//* Controller to handle image upload
+// Controller to handle image upload
 const uploadImage = async (req, res) => {
   try {
-    // Check if the file is missing in the request object
+    // Validate file existence in request
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -16,7 +17,7 @@ const uploadImage = async (req, res) => {
     // Upload image to Cloudinary
     const { url, publicId } = await uploadToCloudinary(req.file.path);
 
-    // Store image details along with the uploading user ID
+    // Save image details in the database
     const uploadedImage = new Image({
       url,
       publicId,
@@ -25,18 +26,17 @@ const uploadImage = async (req, res) => {
 
     await uploadedImage.save();
 
-    // Delete the temporary file using promises
+    // Remove temporary file from server
     try {
       await fs.unlink(req.file.path);
-      console.log('Temporary file deleted successfully');
     } catch (error) {
-      console.log('Failed to delete temp file:', error.message);
+      console.log('Temporary file cleanup failed:', error.message);
     }
 
     res.status(200).json({
       success: true,
       message: 'Image uploaded successfully ✅',
-      image: uploadedImage,
+      data: uploadedImage,
     });
   } catch (error) {
     res.status(500).json({
@@ -46,7 +46,7 @@ const uploadImage = async (req, res) => {
   }
 };
 
-//* Controller to fetch all uploaded images
+// Controller to fetch all uploaded images
 const fetchImages = async (req, res) => {
   try {
     const images = await Image.find({});
@@ -67,9 +67,54 @@ const fetchImages = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong',
+      message: error.message || 'Something went wrong ❌',
     });
   }
 };
 
-module.exports = { uploadImage, fetchImages };
+// Controller to delete an image
+const deleteImage = async (req, res) => {
+  try {
+    const imageId = req.params.id;
+    const userId = req.userInfo.userId;
+
+    const imageToDelete = await Image.findById(imageId);
+
+    if (!imageToDelete) {
+      return res.status(404).json({
+        success: false,
+        message: 'Image not found ❌',
+      });
+    }
+
+    // Authorization check: only uploader can delete the image
+    if (imageToDelete.uploadedBy.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorized to delete this image 🚫',
+      });
+    }
+
+    // Delete image from Cloudinary
+    await cloudinary.uploader.destroy(imageToDelete.publicId);
+
+    // Delete image record from database
+    await Image.findByIdAndDelete(imageId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Image deleted successfully 🗑️',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Something went wrong ❌',
+    });
+  }
+};
+
+module.exports = {
+  uploadImage,
+  fetchImages,
+  deleteImage,
+};
