@@ -4,6 +4,7 @@ const connectDb = require('./database/db.js');
 const userRouter = require('./routes/auth.routes.js');
 const homeRouter = require('./routes/home.routes.js');
 const adminRouter = require('./routes/admin.routes.js');
+const imageRouter = require('./routes/image.routes.js');
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/auth', userRouter);
 app.use('/api/home', homeRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/image', imageRouter);
 
 // Start server after successful database connection
 const startServer = async () => {
