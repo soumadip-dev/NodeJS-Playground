@@ -8,6 +8,8 @@ This repository documents my journey of learning Node.js, including examples, ex
 
 ---
 
+---
+
 ## Note
 
 ### Node.js Module System
@@ -33,13 +35,57 @@ In Node.js, every module is wrapped inside a function (IIFE) before execution. T
 });
 ```
 
+---
+
 ### Path Module
 
 The `path` module provides utilities for working with file and directory paths.
 
 - `path.dirname` → Returns the directory name of the given file path.
-- `path.filename` → Returns the name of the given file (with extension).
+- `path.basename` → Returns the name of the given file (with extension).
 - `path.extname` → Returns the extension of the given file.
 - `path.join` → Joins multiple path segments into a single path using the correct separator.
 - `path.resolve` → Resolves the given path segments into a single absolute path.
 - `path.normalize` → Normalizes a path by resolving `..`, `.`, and removing redundant separators.
+
+---
+
+### `fs` Module
+
+The `fs` (File System) module allows Node.js to interact with the file system. It provides both **synchronous** and **asynchronous** methods to perform operations like creating, reading, updating, and deleting files.
+
+#### Synchronous vs Asynchronous
+
+There are two types of methods in the `fs` module:
+
+- **Synchronous (`Sync`) methods** block execution until completed.
+- **Asynchronous methods** use callbacks to handle completion, allowing non-blocking code execution.
+
+#### Common Methods
+
+- **Creating & Writing Files**
+
+  ```js
+  fs.writeFileSync(filePath, 'Content'); // Synchronous
+  fs.writeFile(filePath, 'Content', callback); // Asynchronous
+  ```
+
+* **Reading Files**
+
+  ```js
+  const data = fs.readFileSync(filePath, 'utf-8'); // Synchronous
+  fs.readFile(filePath, 'utf-8', (err, data) => {}); // Asynchronous
+  ```
+
+* **Appending Data to Files**
+
+  ```js
+  fs.appendFileSync(filePath, 'New line'); // Synchronous
+  fs.appendFile(filePath, 'New line', callback); // Asynchronous
+  ```
+
+* **Checking & Creating Directories**
+
+  ```js
+  if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath); // Synchronous
+  ```
