@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const productRouter = require('./routes/Product.routes');
+const bookRouter = require('./routes/Book.routes');
 
 dotenv.config();
 
@@ -11,8 +12,9 @@ const PORT = process.env.PORT || 8080;
 // Middleware to parse JSON
 app.use(express.json());
 
-// Product routes
+// Routes
 app.use('/api/product', productRouter);
+app.use('/api/reference', bookRouter);
 
 // Connect to MongoDB and start the server
 mongoose
