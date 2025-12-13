@@ -49,12 +49,44 @@ const uploadImage = async (req, res) => {
 // Controller to fetch all uploaded images
 const fetchImages = async (req, res) => {
   try {
-    const images = await Image.find({});
+    // page  -> current page number (default: 1)
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+
+    // limit -> number of records per page (default: 5)
+    const limit = Math.max(parseInt(req.query.limit) || 5, 1);
+
+    /**
+     * Calculate how many records to skip
+     * Example:
+     * page = 2, limit = 5
+     * skip = (2 - 1) * 5 = 5
+     */
+    const skip = (page - 1) * limit;
+
+    // sortBy    -> field name to sort by (default: createdAt)
+    const sortBy = req.query.sortBy || 'createdAt';
+
+    // sortOrder -> asc | desc (default: desc)
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+
+    /**
+     * Build dynamic sort object
+     * Example:
+     * { createdAt: -1 }
+     */
+    const sortObj = {};
+    sortObj[sortBy] = sortOrder;
+
+    const totalImages = await Image.countDocuments();
+
+    const totalPages = Math.ceil(totalImages / limit);
+
+    const images = await Image.find().sort(sortObj).skip(skip).limit(limit);
 
     if (!images || images.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'No images found 👎',
+        message: 'No images found 🪹',
         data: [],
       });
     }
@@ -62,6 +94,9 @@ const fetchImages = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Images fetched successfully ✅',
+      currentPage: page,
+      totalPages: totalPages,
+      totalImages: totalImages,
       data: images,
     });
   } catch (error) {

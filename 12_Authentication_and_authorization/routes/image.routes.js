@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/upload', authenticateRequest, uploadMiddleware.single('image'), uploadImage);
 
 // Get all images
-router.get('/get-image', authorizeAdminRequest, fetchImages);
+router.get('/get', authorizeAdminRequest, fetchImages);
 
 // Delete Image
 router.delete('/delete/:id', authenticateRequest, deleteImage);
