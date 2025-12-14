@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket | Practice</title>
+
+    <!-- Basic UI styling for chat application -->
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(180deg, #f9fafb, #eef2f7);
+        color: #111827;
+      }
+
+      /* Online users section */
+      #user-list {
+        background: linear-gradient(135deg, #0f172a, #1f2937);
+        color: #f9fafb;
+        padding: 16px 20px;
+      }
+
+      #user-list h3 {
+        margin-bottom: 12px;
+        font-size: 14px;
+        border-bottom: 1px solid #334155;
+        padding-bottom: 6px;
+      }
+
+      #users {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      #users li {
+        font-size: 13px;
+        padding: 6px 0;
+      }
+
+      /* Chat messages container */
+      #chat {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: #ffffff;
+      }
+
+      #chat div {
+        margin-bottom: 14px;
+        padding: 10px 14px;
+        background: #f1f5f9;
+        border-radius: 12px;
+        max-width: 72%;
+        font-size: 14px;
+      }
+
+      /* Message input form */
+      #message-form {
+        display: flex;
+        gap: 12px;
+        padding: 14px;
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      #message-input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+      }
+
+      #message-form button {
+        padding: 12px 22px;
+        border-radius: 10px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Online users panel -->
+    <div id="user-list">
+      <h3>Online Users</h3>
+      <ul id="users"></ul>
+    </div>
+
+    <!-- Chat messages container -->
+    <div id="chat"></div>
+
+    <!-- Message input form -->
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Enter your message" required />
+      <button type="submit">Send 🚀</button>
+    </form>
+
+    <!-- Socket.IO client library -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      // Initialize socket connection
+      const socket = io();
+
+      // DOM element references
+      const chatContainer = document.getElementById('chat');
+      const userListElement = document.getElementById('users');
+      const messageForm = document.getElementById('message-form');
+      const messageInput = document.getElementById('message-input');
+
+      // Ask user for a username
+      const userName = prompt('Enter your username 🧑');
+
+      // Notify server that a user has joined (JOIN EVENT — client)
+      socket.emit('join', userName);
+
+      // Listen for user join notifications (BROADCAST EVENT — server)
+      socket.on('userJoined', user => {
+        addMessage(`${user} has joined the chat 🎉`);
+      });
+
+      // Listen for user leave notifications
+      socket.on('userLeft', user => {
+        addMessage(`${user} has left the chat 👋`);
+      });
+
+      // Receive updated user list from server
+      socket.on('userList', users => {
+        userListElement.innerHTML = users.map(user => `<li>${user}</li>`).join('');
+      });
+
+      // Listen for incoming chat messages
+      socket.on('chatMessage', message => {
+        addMessage(`${message.userName}: ${message.text}`);
+      });
+
+      // Handle message form submission (MESSAGE EVENT — client)
+      messageForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const messageText = messageInput.value.trim();
+
+        if (messageText) {
+          socket.emit('chatmessage', {
+            userName,
+            text: messageText,
+          });
+          messageInput.value = '';
+        }
+      });
+
+      // Helper function to add messages to the chat UI
+      function addMessage(text) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = text;
+        chatContainer.appendChild(messageElement);
+
+        // Automatically scroll to the latest message
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
