@@ -1,4 +1,3 @@
-/// NOTES
 // Basic TypeScript data types, structures, and functions 🧩
 
 // Boolean

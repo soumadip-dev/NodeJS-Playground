@@ -1,46 +1,54 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
+  // TypeScript compiler configuration file (tsconfig.json)
+  // Controls how TypeScript compiles and checks your project ⚙️
+
   "compilerOptions": {
-    // File Layout
-    "rootDir": "./src",
-    "outDir": "./dist",
-
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    // Specifies the JavaScript language version for the output
+    // "esnext" allows the latest JS features and lets the runtime handle compatibility
     "target": "esnext",
-    "types": ["node"],
-    // For nodejs:
-    "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
 
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    // Defines the module system for the generated JavaScript
+    // "commonjs" is widely used in Node.js environments
+    "module": "commonjs",
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
+    // Enables all strict type-checking options
+    // Helps catch bugs early and improves code quality ✅
     "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
+
+    // Disallows variables with an implicit "any" type
+    // Forces you to explicitly define types for better safety
+    "noImplicitAny": true,
+
+    // Specifies the output directory for compiled JavaScript files
+    // Keeps source and build files cleanly separated
+    "outDir": "dist",
+
+    // Generates source map files (.map)
+    // Useful for debugging TypeScript code in production or development 🧭
+    "sourceMap": true,
+
+    // Enables compatibility between CommonJS and ES Modules
+    // Allows default imports from CommonJS modules like express
+    "esModuleInterop": true,
+
+    // Ensures file name casing consistency across the project
+    // Prevents issues on case-sensitive file systems (Linux/macOS)
+    "forceConsistentCasingInFileNames": true,
+
+    // Skips type checking of declaration files (.d.ts)
+    // Improves build performance when using third-party libraries 🕸️
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+
+  // Specifies which files TypeScript should include in compilation
+  "include": [
+    // JavaScript files at the project root
+    "./*.js",
+
+    // All TypeScript files inside the src directory
+    "src/**/*.ts",
+
+    // All TypeScript test files
+    "test/**/*.ts"
+  ]
 }
