@@ -93,6 +93,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // Change user password
 const changePassword = async (req, res) => {
   try {
@@ -145,9 +146,17 @@ const changePassword = async (req, res) => {
     });
   }
 };
+=======
+// Change password
+const chnagePassword = async (req, res) => {};
+>>>>>>> b80361ac8d076aad00866eae3f72eceb58aefc7e
 
 module.exports = {
   registerUser,
   loginUser,
+<<<<<<< HEAD
   changePassword,
+=======
+  chnagePassword,
+>>>>>>> b80361ac8d076aad00866eae3f72eceb58aefc7e
 };
