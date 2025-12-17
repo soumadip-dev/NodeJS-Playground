@@ -1,0 +1,380 @@
+/* Reset and base - minimal */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: #fdfaf6;
+  color: #3a3a3a;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Main container */
+.app-container {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* Header - subtle and clean */
+.app-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #5d8aa8;
+  border-radius: 2px;
+}
+
+.app-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #2c3e50;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-title::before {
+  content: "📋";
+  font-size: 2.2rem;
+}
+
+.app-subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+/* Todos container */
+.todos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Todo card - paper-like */
+.todo-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.75rem;
+  position: relative;
+  border: 1px solid #e9e9e9;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.todo-card:hover {
+  border-color: #d0d7de;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+
+.todo-card.completed {
+  opacity: 0.85;
+}
+
+.todo-card.completed::before {
+  content: "✓";
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  background: #4caf50;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Todo header */
+.todo-header {
+  margin-bottom: 1.25rem;
+}
+
+.todo-title-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.todo-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2d3436;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.todo-card.completed .todo-title {
+  color: #7b8a8b;
+  text-decoration: line-through;
+}
+
+/* Status - small tag */
+.status-badge {
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid;
+}
+
+.completed-badge {
+  background: #f1f8e9;
+  color: #2e7d32;
+  border-color: #c5e1a5;
+}
+
+.pending-badge {
+  background: #fff3e0;
+  color: #ef6c00;
+  border-color: #ffcc80;
+}
+
+/* User info - minimal */
+.todo-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #eee;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background: #5d8aa8;
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(93, 138, 168, 0.2);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 0.15rem;
+}
+
+.user-id {
+  font-size: 0.85rem;
+  color: #8899a6;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+}
+
+.label {
+  color: #7b8793;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+/* Footer - minimal stats */
+.app-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  text-align: center;
+  border-top: 2px solid #f0f0f0;
+}
+
+.footer-text {
+  color: #6c757d;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+/* Loading - simple dots */
+.loading-container {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #5d8aa8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #5d8aa8;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Error - clean alert */
+.error-container {
+  background: #fff8f8;
+  border: 1px solid #ffcdd2;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.error-title {
+  color: #c62828;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.error-message {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.retry-button {
+  background: #5d8aa8;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #4a7896;
+}
+
+/* Stagger animation for cards */
+.todo-card:nth-child(1) { animation-delay: 0.1s; }
+.todo-card:nth-child(2) { animation-delay: 0.2s; }
+.todo-card:nth-child(3) { animation-delay: 0.3s; }
+.todo-card:nth-child(4) { animation-delay: 0.4s; }
+
+.todo-card {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .app-title {
+    font-size: 2.2rem;
+  }
+  
+  .todo-card {
+    padding: 1.5rem;
+  }
+  
+  .todo-title-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .status-badge {
+    align-self: flex-start;
+  }
+}
+
+/* Dark mode preference */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+  
+  .app-header::after {
+    background: #7ba7c4;
+  }
+  
+  .app-title {
+    color: #f0f0f0;
+  }
+  
+  .app-subtitle {
+    color: #a0a0a0;
+  }
+  
+  .todo-card {
+    background: #2a2a2a;
+    border-color: #404040;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  
+  .todo-title {
+    color: #f0f0f0;
+  }
+  
+  .todo-card.completed .todo-title {
+    color: #888;
+  }
+  
+  .todo-user-info {
+    border-top-color: #404040;
+  }
+  
+  .app-footer {
+    border-top-color: #404040;
+  }
+  
+  .footer-text {
+    color: #a0a0a0;
+  }
+}
