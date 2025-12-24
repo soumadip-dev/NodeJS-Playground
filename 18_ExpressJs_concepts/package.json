@@ -1,0 +1,27 @@
+{
+  "name": "18_expressjs_concepts",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "server.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env dist/server.js",
+    "dev": "tsx watch --env-file=.env server.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
