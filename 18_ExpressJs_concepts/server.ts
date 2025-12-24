@@ -11,23 +11,28 @@ import {
   validateApiVersionFromHeader,
   validateApiVersionFromContentType,
 } from './middleware/apiVersoning';
+import { createRateLimiter } from './rateLimiting';
+import itemRoutes from './routes/item.routes';
 
 dotenv.config();
 
 const app: Express = express();
 const PORT: number = Number(process.env.PORT) || 8080;
 
-// Built-in and custom middlewares
 app.use(express.json()); // Express JSON body parser
 app.use(configureCors()); // CORS configuration
 app.use(requestLogger); // Logs incoming requests 📋
 app.use(addTimeStamp); // Adds timestamp to request 🕒
-app.use(globalErrorHandler); // Global error handler 🚨
+app.use(createRateLimiter(100, 15 * 60 * 100)); // 100 request per 15 minutes 🕒
 
 // API versioning middlewares
-app.use('/api/v1', validateApiVersionFromUrl('v1'));
+app.use(validateApiVersionFromUrl('v1'));
 // app.use(validateApiVersionFromHeader('v1'));
 // app.use(validateApiVersionFromContentType('v1'));
+
+app.use('/api/v1', createRateLimiter(3, 60 * 100), itemRoutes);
+
+app.use(globalErrorHandler); // Global error handler 🚨
 
 // Home route
 app.get('/', (_req: Request, res: Response) => {
