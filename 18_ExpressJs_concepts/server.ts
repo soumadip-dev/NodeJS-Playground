@@ -4,6 +4,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 import configureCors from './config/cors.config';
+import { addTimeStamp, requestLogger } from './middleware/customeMiddleware';
+import { globalErrorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -12,6 +14,9 @@ const PORT: number = Number(process.env.PORT) || 8080;
 
 app.use(express.json()); // express json middleware
 app.use(configureCors());
+app.use(requestLogger);
+app.use(addTimeStamp);
+app.use(globalErrorHandler);
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
