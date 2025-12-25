@@ -1,0 +1,43 @@
+{
+  // TypeScript compiler configuration file (tsconfig.json)
+  // Controls how TypeScript compiles and checks your project ⚙️
+  "compilerOptions": {
+    // Specifies the JavaScript language version for the output
+    // "esnext" allows the latest JS features and lets the runtime handle compatibility
+    "target": "esnext",
+    // Defines the module system for the generated JavaScript
+    // "commonjs" is widely used in Node.js environments
+    "module": "commonjs",
+    // Enables all strict type-checking options
+    // Helps catch bugs early and improves code quality ✅
+    "strict": true,
+    // Disallows variables with an implicit "any" type
+    // Forces you to explicitly define types for better safety
+    "noImplicitAny": true,
+    // Specifies the output directory for compiled JavaScript files
+    // Keeps source and build files cleanly separated
+    "outDir": "dist",
+    // Generates source map files (.map)
+    // Useful for debugging TypeScript code in production or development 🧭
+    "sourceMap": true,
+    // Enables compatibility between CommonJS and ES Modules
+    // Allows default imports from CommonJS modules like express
+    "esModuleInterop": true,
+    // Ensures file name casing consistency across the project
+    // Prevents issues on case-sensitive file systems (Linux/macOS)
+    "forceConsistentCasingInFileNames": true,
+    // Skips type checking of declaration files (.d.ts)
+    // Improves build performance when using third-party libraries 🕸️
+    "skipLibCheck": true
+  },
+  // Specifies which files TypeScript should include in compilation
+  "include": [
+    // JavaScript files at the project root
+    "./*.js",
+    // All TypeScript files inside the src directory
+    "src/**/*.ts",
+    // All TypeScript test files
+    "test/**/*.ts",
+    "server.ts"
+  ]
+}
