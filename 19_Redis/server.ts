@@ -19,23 +19,42 @@ redisClient.on('error', (error: Error) => {
 // Function to test Redis connection and basic operations
 const testRedisConnection = async (): Promise<void> => {
   try {
+    // Connect to Redis
     await redisClient.connect();
     console.log('Connected to Redis successfully 🚀');
 
+    // Set a key-value pair
     await redisClient.set('name', 'soumadip');
     console.log('Key "name" set successfully 📝');
 
-    const retrievedValue = await redisClient.get('name');
-    console.log('Retrieved value from Redis:', retrievedValue, '📦');
+    // Get the value of a key
+    const retrievedName = await redisClient.get('name');
+    console.log('Retrieved value from Redis:', retrievedName, '📦');
+
+    // Delete the key
+    const deletedKeyCount = await redisClient.del('name');
+    console.log('Deleted keys count:', deletedKeyCount, '🗑️');
+
+    // Set and increment a numeric value
+    await redisClient.set('count', 100);
+    const incrementedCount = await redisClient.incr('count');
+    console.log('Incremented count value:', incrementedCount, '➕');
+
+    // Decrement the numeric value
+    const decrementedCount = await redisClient.decr('count');
+    console.log('Decremented count value:', decrementedCount, '➖');
   } catch (error) {
     console.error('Redis connection failed ⚠️', error);
   } finally {
+    // Close Redis connection
     await redisClient.quit();
     console.log('Redis connection closed 👋');
   }
 };
 
+// Execute Redis test
 testRedisConnection();
+
 /*
 dotenv.config();
 
