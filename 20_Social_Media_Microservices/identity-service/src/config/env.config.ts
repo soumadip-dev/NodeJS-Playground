@@ -1,23 +1,16 @@
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-// Allowed Node.js environments
 type NodeEnv = 'development' | 'production' | 'test';
 
-const port = Number(process.env.PORT);
+const port = Number(process.env.PORT) || 8080;
+const nodeEnv: NodeEnv = ['development', 'production', 'test'].includes(process.env.NODE_ENV || '')
+  ? (process.env.NODE_ENV as NodeEnv)
+  : 'development';
+const mongoUri = process.env.MONGO_URI || '';
 
-// Centralized environment configuration
-export const ENV: {
-  PORT: number;
-  NODE_ENV: NodeEnv;
-} = {
-  PORT: Number.isNaN(port) ? 8080 : port,
-
-  NODE_ENV:
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'production' ||
-    process.env.NODE_ENV === 'test'
-      ? process.env.NODE_ENV
-      : 'development',
+export const ENV = {
+  PORT: port,
+  NODE_ENV: nodeEnv,
+  MONGO_URI: mongoUri,
 };
