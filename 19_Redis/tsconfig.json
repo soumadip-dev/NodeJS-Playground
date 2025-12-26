@@ -38,6 +38,7 @@
     "src/**/*.ts",
     // All TypeScript test files
     "test/**/*.ts",
-    "server.ts"
-, "app.ts", "data-structure.ts"  ]
+    "app.ts",
+    "data-structure.ts"
+  ]
 }
