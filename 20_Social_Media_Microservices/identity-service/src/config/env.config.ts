@@ -8,9 +8,11 @@ const nodeEnv: NodeEnv = ['development', 'production', 'test'].includes(process.
   ? (process.env.NODE_ENV as NodeEnv)
   : 'development';
 const mongoUri = process.env.MONGO_URI || '';
+const jwtSecret = process.env.JWT_SECRET || '';
 
 export const ENV = {
   PORT: port,
   NODE_ENV: nodeEnv,
   MONGO_URI: mongoUri,
+  JWT_SECRET: jwtSecret,
 };

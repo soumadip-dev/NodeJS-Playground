@@ -55,4 +55,4 @@ userSchema.index({ username: 'text' });
 //* Mongoose model for User
 const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
 
-export { User };
+export { User, IUser };
