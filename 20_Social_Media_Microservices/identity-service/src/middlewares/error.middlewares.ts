@@ -12,7 +12,7 @@ const errorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  logger.error(err);
+  logger.error(`Error occurred: ${err.message} ❌`, { error: err });
 
   const statusCode = err.status ?? 500;
   const message = err.message ?? 'Internal server error';

@@ -13,10 +13,10 @@ const configureCors = (): ReturnType<typeof cors> => {
       const allowedOrigins: string[] = [ENV.FRONTEND_URL, 'https://yourcustomdomain.com'];
 
       if (!origin || allowedOrigins.includes(origin)) {
-        logger.info(`CORS allowed for origin: ${origin || 'Unknown'}`);
+        logger.info(`CORS allowed for origin: ${origin || 'Unknown'} ✅`);
         callback(null, true);
       } else {
-        logger.warn(`CORS blocked for origin: ${origin}`);
+        logger.warn(`CORS blocked for origin: ${origin} 🚫`);
         callback(new Error('Not allowed by CORS ❌'), false);
       }
     },
@@ -30,7 +30,7 @@ const configureCors = (): ReturnType<typeof cors> => {
     optionsSuccessStatus: 204,
   };
 
-  logger.info('CORS middleware configured successfully');
+  logger.info('CORS middleware configured successfully ✅');
   return cors(options);
 };
 
