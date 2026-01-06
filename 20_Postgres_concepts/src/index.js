@@ -7,6 +7,7 @@ const {
   deleteUser,
 } = require('./concepts/basic-queries');
 const { getUserWhere, getSortedUser, getPaginatedUser } = require('./concepts/filtering-sorting');
+const { createPostTable, insertNewPost } = require('./concepts/relationships');
 
 dotenv.config();
 
@@ -33,24 +34,34 @@ dotenv.config();
 // }
 
 // Filter and Sorting
-async function testFilterAndSortQueries() {
+// async function testFilterAndSortQueries() {
+//   try {
+// const rFilteredUsers = await getUserWhere("username LIKE 'R%'");
+// console.log(rFilteredUsers);
+
+// const sortedUserByUserName = await getSortedUser('username', 'DESC');
+// console.log(sortedUserByUserName);
+
+//     const paginatedUser = await getPaginatedUser(2, 3);
+//     console.log(paginatedUser);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
+async function testRelationshipQueries() {
   try {
-    // const rFilteredUsers = await getUserWhere("username LIKE 'R%'");
-    // console.log(rFilteredUsers);
-
-    // const sortedUserByUserName = await getSortedUser('username', 'DESC');
-    // console.log(sortedUserByUserName);
-
-    const paginatedUser = await getPaginatedUser(2, 3);
-    console.log(paginatedUser);
+    // await createPostTable();
+    const newPost = await insertNewPost('My first post', 'This is post content', 3);
+    console.log(newPost);
   } catch (error) {
     console.error(error);
   }
 }
-
 async function runAllQueries() {
   // await testBasicQueries();
-  await testFilterAndSortQueries();
+  // await testFilterAndSortQueries();
+  testRelationshipQueries();
 }
 
 runAllQueries();
