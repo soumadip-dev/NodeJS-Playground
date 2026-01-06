@@ -36,4 +36,60 @@ async function insertUser(username, email) {
   }
 }
 
-module.exports = { createUsersTable, insertUser };
+async function fetchAllUsers() {
+  const fetchUsersQuery = `
+    SELECT * FROM users;
+  `;
+
+  try {
+    const res = await db.query(fetchUsersQuery);
+    console.log('Fetched users:', res.rows);
+    return res.rows;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}
+
+async function updateEmailOfUser(username, newEmail) {
+  const updateUserQuery = `
+    UPDATE users
+    SET email = $2
+    WHERE username = $1
+    RETURNING *
+  `;
+
+  try {
+    const res = await db.query(updateUserQuery, [username, newEmail]);
+    console.log('User updated:', res.rows[0]);
+    return res.rows[0];
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
+async function deleteUser(username) {
+  const deleteUserQuery = `
+    DELETE FROM users
+    WHERE username = $1
+    RETURNING *
+  `;
+
+  try {
+    const res = await db.query(deleteUserQuery, [username]);
+    console.log('User deleted:', res.rows[0]);
+    return res.rows[0];
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  createUsersTable,
+  insertUser,
+  fetchAllUsers,
+  updateEmailOfUser,
+  deleteUser,
+};
