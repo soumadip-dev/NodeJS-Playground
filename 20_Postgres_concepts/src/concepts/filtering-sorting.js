@@ -30,4 +30,23 @@ async function getSortedUser(column, order = 'ASC') {
   }
 }
 
-module.exports = { getUserWhere, getSortedUser };
+async function getPaginatedUser(limit, offset) {
+  const fetchPaginatedUsersQuery = `
+    SELECT * FROM users
+    LIMIT $1 OFFSET $2
+  `;
+
+  try {
+    const res = await db.query(fetchPaginatedUsersQuery, [limit, offset]);
+    return res.rows;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  getUserWhere,
+  getSortedUser,
+  getPaginatedUser,
+};

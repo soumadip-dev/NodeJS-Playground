@@ -6,7 +6,7 @@ const {
   updateEmailOfUser,
   deleteUser,
 } = require('./concepts/basic-queries');
-const { getUserWhere, getSortedUser } = require('./concepts/filtering-sorting');
+const { getUserWhere, getSortedUser, getPaginatedUser } = require('./concepts/filtering-sorting');
 
 dotenv.config();
 
@@ -38,8 +38,11 @@ async function testFilterAndSortQueries() {
     // const rFilteredUsers = await getUserWhere("username LIKE 'R%'");
     // console.log(rFilteredUsers);
 
-    const sortedUserByUserName = await getSortedUser('username', 'DESC');
-    console.log(sortedUserByUserName);
+    // const sortedUserByUserName = await getSortedUser('username', 'DESC');
+    // console.log(sortedUserByUserName);
+
+    const paginatedUser = await getPaginatedUser(2, 3);
+    console.log(paginatedUser);
   } catch (error) {
     console.error(error);
   }
