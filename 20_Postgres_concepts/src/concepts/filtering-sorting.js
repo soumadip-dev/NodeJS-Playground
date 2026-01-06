@@ -15,4 +15,19 @@ async function getUserWhere(condition) {
   }
 }
 
-module.exports = { getUserWhere };
+async function getSortedUser(column, order = 'ASC') {
+  const fetchSortedUsersQuery = `
+    SELECT * FROM users
+    ORDER BY ${column} ${order}
+  `;
+
+  try {
+    const res = await db.query(fetchSortedUsersQuery);
+    return res.rows;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}
+
+module.exports = { getUserWhere, getSortedUser };
