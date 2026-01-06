@@ -8,6 +8,11 @@ const {
 } = require('./concepts/basic-queries');
 const { getUserWhere, getSortedUser, getPaginatedUser } = require('./concepts/filtering-sorting');
 const { createPostTable, insertNewPost } = require('./concepts/relationships');
+const {
+  getUsersWithPost,
+  getAllUsersWithTheirPosts,
+  getAllPostsWithTheirUsers,
+} = require('./concepts/joins');
 
 dotenv.config();
 
@@ -49,11 +54,26 @@ dotenv.config();
 //   }
 // }
 
-async function testRelationshipQueries() {
+// async function testRelationshipQueries() {
+//   try {
+// await createPostTable();
+//     const newPost = await insertNewPost('My first post', 'This is post content', 3);
+//     console.log(newPost);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
+async function testJoinsQueries() {
   try {
-    // await createPostTable();
-    const newPost = await insertNewPost('My first post', 'This is post content', 3);
-    console.log(newPost);
+    // const userWithPost = await getUsersWithPost();
+    // console.log(userWithPost);
+
+    // const allUserswithPosts = await getAllUsersWithTheirPosts();
+    // console.log(allUserswithPosts);
+
+    const allPostsWithUser = await getAllPostsWithTheirUsers();
+    console.log(allPostsWithUser);
   } catch (error) {
     console.error(error);
   }
@@ -61,7 +81,8 @@ async function testRelationshipQueries() {
 async function runAllQueries() {
   // await testBasicQueries();
   // await testFilterAndSortQueries();
-  testRelationshipQueries();
+  // await testRelationshipQueries();
+  await testJoinsQueries();
 }
 
 runAllQueries();
