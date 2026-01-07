@@ -9,7 +9,7 @@ process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) =>
 
 const startServer = async (): Promise<void> => {
   const server = app.listen(PORT, () => {
-    console.info(`Identity service running on http://localhost:${PORT}`);
+    console.info(`Server is running on http://localhost:${PORT}`);
   });
 
   // Handle server errors

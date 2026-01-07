@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import type { MessageResponse } from '../interfaces/message-response';
 import type { ErrorResponse } from '../interfaces/error-response';
-import { addAuthor } from '../services/author.services';
+import { addAuthor, deleteAuthor } from '../services/author.services';
 
 //* Controller to add a new author
 const addNewAuthor = async (req: Request, res: Response<MessageResponse | ErrorResponse>) => {
@@ -9,7 +9,7 @@ const addNewAuthor = async (req: Request, res: Response<MessageResponse | ErrorR
     const { name } = req.body;
 
     if (!name) {
-      throw new Error('Author name needed ❌');
+      throw new Error('Author name needed');
     }
 
     const author = await addAuthor(name);
@@ -27,4 +27,29 @@ const addNewAuthor = async (req: Request, res: Response<MessageResponse | ErrorR
   }
 };
 
-export { addNewAuthor };
+//* Controller to delete an author by ID
+const deleteAuthorById = async (req: Request, res: Response<MessageResponse | ErrorResponse>) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error('Invalid author ID');
+    }
+
+    const deletedAuthor = await deleteAuthor(id);
+
+    res.status(200).json({
+      message: `Author deleted successfully with ID ${id} ✅`,
+      success: true,
+      data: deletedAuthor,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message || 'Failed to delete author ❌',
+      success: false,
+      errors: error.errors || undefined,
+    });
+  }
+};
+
+export { addNewAuthor, deleteAuthorById };
