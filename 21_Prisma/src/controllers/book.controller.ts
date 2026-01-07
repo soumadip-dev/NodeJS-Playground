@@ -3,6 +3,8 @@ import {
   addBook as addBookService,
   getAllBooks as getAllBooksService,
   getBookById as getBookByIdService,
+  updateBookById as updateBookService,
+  deleteBook as deleteBookService,
 } from '../services/book.services';
 import type { MessageResponse } from '../interfaces/message-response';
 import type { ErrorResponse } from '../interfaces/error-response';
@@ -82,4 +84,59 @@ const getBookById = async (req: Request, res: Response<MessageResponse | ErrorRe
   }
 };
 
-export { addBook, getAllBooks, getBookById };
+//* Controller to update a book by ID
+const updateBook = async (req: Request, res: Response<MessageResponse | ErrorResponse>) => {
+  try {
+    const id = Number(req.params.id);
+    const { title } = req.body;
+
+    if (isNaN(id)) {
+      throw new Error('Invalid book ID ❌');
+    }
+
+    if (!title) {
+      throw new Error('Title is required ❌');
+    }
+
+    const updatedBook = await updateBookService(id, title);
+
+    res.status(200).json({
+      message: 'Book updated successfully ✅',
+      success: true,
+      data: updatedBook,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message || 'Failed to update book ❌',
+      success: false,
+      errors: error.errors || undefined,
+    });
+  }
+};
+
+//* Controller to delete a book by ID
+const deleteBook = async (req: Request, res: Response<MessageResponse | ErrorResponse>) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error('Invalid book ID ❌');
+    }
+
+    const deletedBook = await deleteBookService(id);
+
+    res.status(200).json({
+      message: `Book with ID ${id} deleted successfully ✅`,
+      success: true,
+      data: deletedBook,
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message || 'Failed to delete book ❌',
+      success: false,
+      errors: error.errors || undefined,
+    });
+  }
+};
+
+export { addBook, getAllBooks, getBookById, updateBook, deleteBook };
