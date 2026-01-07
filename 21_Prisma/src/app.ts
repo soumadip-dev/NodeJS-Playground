@@ -8,8 +8,9 @@ import morgan from 'morgan';
 
 import type { MessageResponse } from './interfaces/message-response';
 
-import configureCors from './config/cors.config.js';
-import healthRoutes from './routes/health.routes.js';
+import configureCors from './config/cors.config';
+import healthRoutes from './routes/health.routes';
+import authorRoutes from './routes/author.routes';
 import errorHandler from './middlewares/error.middlewares';
 
 const app: Express = express();
@@ -30,6 +31,7 @@ app.get('/', (req: Request, res: Response<MessageResponse>) => {
 
 // Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/author', authorRoutes);
 
 // Error handler
 app.use(errorHandler);
