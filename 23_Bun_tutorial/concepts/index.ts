@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from 'express';
-import './features/fs';
+// import './features/fs';
+import './features/binary';
 
 const port: number = 8080;
 const app = express();
