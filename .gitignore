@@ -3,6 +3,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Runtime data
 *.pid
@@ -14,6 +17,7 @@ node_modules/
 # Coverage directories
 coverage/
 .nyc_output
+*.lcov
 
 # Build outputs
 dist/
@@ -21,17 +25,22 @@ dist/
 out/
 .nuxt/
 build/
+*.tgz
 
 # Cache directories
 .cache/
 .parcel-cache
 .eslintcache
 .tmp/
+*.tsbuildinfo
 
 # Environment variables
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # IDE
 .vscode/
