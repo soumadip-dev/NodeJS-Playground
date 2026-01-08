@@ -4,7 +4,8 @@ dotenv.config();
 import express, { type Request, type Response } from 'express';
 // import './features/fs';
 // import './features/binary';
-import './features/meta-env';
+// import './features/meta-env';
+import './features/fetch';
 
 const port: number = 8080;
 const app = express();
