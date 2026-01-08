@@ -6,5 +6,5 @@ import express, { type Request, type Response } from 'express';
 // import './features/binary';
 // import './features/meta-env';
 // import './features/fetch';
-// import './features/fetch';
-import './features/server';
+// import './features/server';
+import './features/hashing';

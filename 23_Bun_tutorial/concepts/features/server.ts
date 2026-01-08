@@ -25,7 +25,7 @@ const usersList: User[] = [
 
 // Create Bun server
 const apiServer: Server<any> = Bun.serve({
-  port: 3000,
+  port: Bun.env.PORT,
   fetch(request: Request): Response {
     const requestUrl = new URL(request.url);
     const requestMethod = request.method;
