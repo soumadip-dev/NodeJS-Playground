@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from 'express';
+import './features/fs';
 
 const port: number = 8080;
 const app = express();
