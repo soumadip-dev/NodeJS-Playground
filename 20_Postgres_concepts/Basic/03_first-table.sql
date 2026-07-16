@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS basic.students;
+DROP TABLE IF EXISTS basics.students;
 
-CREATE TABLE basic.students (
+CREATE TABLE basics.students (
   -- Auto-incrementing integer:
   -- 1, 2, 3, ...
   -- PRIMARY KEY uniquely identifies each row.
@@ -23,3 +23,17 @@ CREATE TABLE basic.students (
   -- if no value is provided during insertion.
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+-- Insert some data
+INSERT INTO basics.students(name, email, age)
+VALUES
+('Soumadip', 'soumadipmajila@gmail.com', 23),
+('Jackson', 'jack@gmail.com', 30);
+
+
+SELECT * FROM basics.students
+
+
+-- sudo -u postgres psql -d postgresql_basics
+
+-- sudo -u postgres psql -d postgresql_basics -f Basics/03_first-table.sql 
