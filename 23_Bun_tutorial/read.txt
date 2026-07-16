@@ -1,4 +1,0 @@
-This file is used to practice file system operations like:
-📄 Reading text from a file  
-📦 Checking file size and type  
-🧠 Working with ArrayBuffer and bytes  
