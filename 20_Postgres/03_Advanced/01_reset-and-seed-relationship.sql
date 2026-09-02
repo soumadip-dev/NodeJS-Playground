@@ -43,11 +43,16 @@ CREATE TABLE advanced.posts_tags (
 -- 2. Insert Data
 
 -- Insert data in users table
-INSERT INTO advanced.users (name) VALUES
+INSERT INTO advanced.users(name) VALUES
   ('Ananya'),
   ('Rahul');
 
 -- Insert data in posts table
+INSERT INTO advanced.posts (user_id, title, status, views)
+SELECT id, 'PostgreSQL Joins Explained', 'published', 100
+FROM advanced.users
+WHERE name = 'Ananya';
+
 INSERT INTO advanced.posts (user_id, title, status, views)
 SELECT id, 'Indexes for Beginners', 'draft', 40
 FROM advanced.users
@@ -93,5 +98,4 @@ FROM advanced.posts p, advanced.tags t
 WHERE p.title = 'Backend APIs with PostgreSQL'
   AND t.name = 'backend';
 
--- 3. Execution Confirmation Message
 SELECT 'Part 3 reduced database reset and sample data inserted successfully.' AS message;
