@@ -12,3 +12,14 @@ WHERE views > (
     SELECT AVG(views) 
     FROM advanced.posts
 );
+
+-- EXISTS: Returns TRUE if the subquery returns one or more records
+-- Find posts that have at least one comment associated with them
+SELECT 
+    p.title
+FROM advanced.posts p
+WHERE EXISTS (
+    SELECT 1 
+    FROM advanced.comments c
+    WHERE c.post_id = p.id
+);
