@@ -4,7 +4,7 @@
 
 Docker is a containerization platform that helps us build, share, and run applications in isolated environments called **containers**. It's essential for large organizations and development teams.
 
-***
+---
 
 ## Why Do We Need Docker?
 
@@ -12,84 +12,141 @@ Traditional software development faces several challenges when working in teams.
 
 ### Example Scenario
 
-* **Developer A has:** Node.js v16 + MongoDB v4.2 on Windows
-* **Developer B needs to replicate the same environment:** on Mac
+- **Developer A has:** Node.js v16 + MongoDB v4.2 on Windows
+- **Developer B needs to replicate the same environment:** on Mac
 
 Manual setup leads to version mismatches and configuration errors.
 
 ### Common Problems
 
-* **Manual Installation Errors** — Installing dependencies one by one
-* **Version Compatibility Issues** — Different versions of the same technology
-* **Environment Inconsistencies** — "It works on my machine" problem
-* **Platform Dependencies** — OS-specific commands and configurations
+- **Manual Installation Errors** — Installing dependencies one by one
+- **Version Compatibility Issues** — Different versions of the same technology
+- **Environment Inconsistencies** — "It works on my machine" problem
+- **Platform Dependencies** — OS-specific commands and configurations
 
-***
-
-## Problems Docker Solves
-
-### The Classic Problem: "It Works on My Machine"
-
-```text
-Machine A (Developer 1)          Machine B (Developer 2)
-├── Node.js v16                  ├── Node.js v20 (different version!)
-├── MongoDB v4.2                 ├── MongoDB v6.0 (different version!)
-└── Windows OS                   └── Mac OS (different OS!)
-```
-
-Suppose Developer 1 has Machine A (Linux) where they have built an application, and it’s working perfectly fine on their machine. However, when they share this application (e.g., via a GitHub repository) with Developer 2, it may throw errors on Machine B (Mac, Windows, or a different Linux environment) due to differences in dependency versions, configurations, or other environment-specific issues. There can be many reasons for these errors.
-
-This is exactly the problem Docker solves — Developer 1 can containerize the application and share it with Developer 2. This ensures that the application runs consistently across different environments, regardless of the underlying system.
-
-***
+---
 
 ## Docker's Solution
 
+### The Classic Problem: "It Works on My Machine"
+
 Instead of installing dependencies individually, Docker packages:
 
-* Application Code
-* All Dependencies
-* Runtime Environment
-* System Libraries
+- Application Code
+- All Dependencies
+- Runtime Environment
+- System Libraries
 
 Into a single, portable unit called a **Container**.
 
-***
+---
+
+# Docker Engine
+
+On the installation of Docker, it installs two things:
+
+- **Docker CLI**
+- **Docker GUI**
+
+**Docker Engine** is the main/core part of Docker. It is responsible for **creating, running, and managing containers**.
+
+Docker Engine works using a **client-server architecture**.
+
+It has three main parts:
+
+1. **Docker Client (CLI)**
+2. **Docker Daemon**
+3. **REST API**
+
+## Workflow
+
+**Docker CLI** is the tool we use to communicate with Docker.
+
+For example:
+
+```bash
+docker run nginx
+```
+
+When we run this command, the CLI sends a request to the **Docker Daemon** through the **REST API**.
+
+The **REST API** is the communication layer between the **Docker Client** and the **Docker Daemon**. It provides a set of APIs that allow the client and other applications to interact with the Docker Daemon.
+
+The **Docker Daemon** is the long-running background service responsible for performing the actual Docker operations.
+
+It:
+
+- Listens for Docker API requests
+- Builds Docker images
+- Creates and runs containers
+- Stops and removes containers
+- Manages networks and volumes
+
+---
 
 # Docker Core Concepts
 
-## 1. Docker Container
+## 1. Docker Image
 
-A container is a single bundle/unit that contains:
+A Docker Image is:
 
-* Your application
-* All its dependencies
-* Runtime environment
+- A **read-only template/blueprint** for creating containers.
+- An **executable package** containing everything needed to run an application, including instructions, dependencies, libraries, and configuration.
+- A **static snapshot** of what the environment should look like.
+- **Not a running application**; it is used to create containers.
+- Made up of **multiple layers**.
+
+### Example
+
+Suppose we have a Node.js application.
+
+The Docker Image can contain:
+
+```text
+Node.js -> Dependencies -> Application Code -> Configuration
+```
+
+## 2. Docker Container
+
+A **Docker Container** is a **running instance of a Docker Image**.
+
+A container can contain:
+
+- Your application
+- Dependencies
+- Runtime environment
+- Startup commands
+
+A container can be:
+
+- Created
+- Started
+- Stopped
+- Removed
+- Connected to a network
+- Connected to storage
 
 ### Key Properties
 
-* **Portable** — Can be shared across different systems
-* **Lightweight** — Minimal overhead compared to Virtual Machines
-* **Isolated** — Each container has its own environment
+- **Portable** — Can be shared and run across different systems.
+- **Lightweight** — Has minimal overhead compared to virtual machines.
+- **Isolated** — Each container runs in an isolated environment.
 
 ### Example
 
 ```text
-Container 1: App A + Node.js v16 + Dependencies
-Container 2: App B + Node.js v20 + Dependencies
+Container 1
+App A + Node.js v16 + Dependencies
+
+Container 2
+App B + Node.js v20 + Dependencies
 ```
 
-***
-
-## 2. Docker Image
-
-A Docker Image is:
-
-* An executable file containing instructions to build containers
-* A static snapshot of what the environment should look like
-* A blueprint for creating containers
+Both applications can use different Node.js versions without interfering with each other.
 
 ### Relationship: Image vs Container
+
+The easiest way to remember the difference:
 
 ```text
 Docker Image : Docker Container
@@ -98,99 +155,234 @@ Docker Image : Docker Container
   Blueprint   :    Instance
 ```
 
-### Key Differences
+For example:
 
-| Docker Image                  | Docker Container              |
-| ----------------------------- | ----------------------------- |
-| Static snapshot               | Running instance              |
-| Template/Blueprint            | Actual execution              |
-| Minimal storage               | Uses system resources         |
-| Shareable                     | Environment-specific          |
-| Something like a class in OOP | Something like objects in OOP |
-
-***
-
-# Docker Installation
-
-## For Mac/Windows
-
-1. Visit `docker.com`
-2. Download Docker Desktop
-3. Install and follow the setup wizard
-4. Accept recommended settings
-
-***
-
-## Verification Commands
-
-```bash
-# Check Docker version
-docker --version
-
-# Check if Docker is working
-docker
-
-# Test with hello-world
-docker run hello-world
+```text
+Node.js App Image -> Create Container -> Running Node.js App
 ```
 
-***
+| Docker Image              | Docker Container                         |
+| ------------------------- | ---------------------------------------- |
+| Blueprint                 | Running instance                         |
+| Read-only                 | Can be modified while running            |
+| Used to create containers | Created from an image                    |
+| Static                    | Running/dynamic                          |
+| Can be shared             | Runs on a specific system                |
+| Made of layers            | Uses the image layers + a writable layer |
+| Like a class in OOP       | Like an object in OOP                    |
 
-## Docker Desktop Features
+Add the following section at the bottom of your note:
 
-* **Containers Tab** — View all running/stopped containers
-* **Images Tab** — View all downloaded images
-* **GUI Management** — Easy container management
+## 3. Docker Volume
 
-***
+A **Docker Volume** is used to **store data** outside the container.
 
-# Docker Engine
+- Data remains safe even if the container is removed.
+- Useful for databases and persistent application data.
 
-On installation of Docker, it installs two things: **Docker CLI** and **Docker GUI**.
+### Example
 
-Docker Engine is the core component of the Docker platform, providing the runtime environment for containers and enabling users to build, run, and manage containerized applications.
+```text
+Container → Docker Volume → Data
+```
 
-Docker Engine consists of three parts:
+## 4. Docker Network
 
-1. Docker Daemon
-2. REST API
-3. CLI
+A **Docker Network** allows **containers to communicate with each other and with other services**.
 
-### Workflow
+- Containers can connect to the same network.
+- Containers can communicate using their container names.
 
-When you use the Docker command-line interface (CLI) or other tools that interact with Docker, they send requests to the Docker daemon via this REST API.
+### Example
 
-The API defines the endpoints and methods available for performing various Docker operations, allowing for automation and integration of Docker functionalities within other applications and workflows.
+```text
+Backend Container ←→ Database Container
+          ↓
+     Docker Network
+```
 
-***
+## 5. Docker Registry
 
-# Docker Hub & Docker Lifecycle
+A **Docker Registry** is a place where **Docker Images are stored and shared**.
 
-## What is Docker Hub?
+- We can **push** images to a registry.
+- We can **pull** images from a registry.
 
-Docker Hub is like GitHub for Docker Images:
+There can be many different registries.
 
-* Public collection of Docker images
-* Official images for popular technologies
-* Community-contributed images
+Examples:
 
-***
+- Docker Hub
+- GitHub Container Registry (GHCR)
+- Amazon ECR
 
-## Accessing Docker Hub
+### What is Docker Hub?
 
-* URL: `hub.docker.com`
-* Search for images (e.g., `ubuntu`, `node`, `mongodb`)
-* View documentation and usage examples
+**Docker Hub** is a **public Docker Registry provided by Docker**.
 
-***
+- Public collection of Docker images
+- Official images for popular technologies
+- Community-contributed images
+
+### Accessing Docker Hub
+
+- URL: `hub.docker.com`
+- Search for images (e.g., `ubuntu`, `node`, `mongodb`)
+- View documentation and usage examples
+
+---
 
 ## Docker Lifecycle
 
-A Dockerfile is a set of instructions used to build a Docker image (like a class in programming), which is pushed to Docker Hub (a public registry).
+```mermaid
+graph LR
+    Dockerfile["Dockerfile"] --> BuildImage["Build Image"]
+    BuildImage --> DockerImage["Docker Image"]
+    DockerImage --> CreateContainer["Create Container"]
+    CreateContainer --> StartContainer["Start Container"]
+    StartContainer --> RunningProcess["Running Process"]
+
+    RunningProcess --> LogsExecInspect["Logs / Exec / Inspect"]
+    RunningProcess --> Stop["Stop"]
+
+    Stop --> Restart["Restart"]
+    Stop --> RemoveContainer["Remove Container"]
+```
 
 A Docker image can be created from a Dockerfile or downloaded from Docker Hub, and it serves as a blueprint to create a Docker container (like an instance or object), which represents the running application in a live environment.
 
-***
+---
+
+# Basic Docker Commands
+
+## 1.
+
+```bash
+docker run hello-world
+```
+
+**Downloads the image** if it is not available locally and **creates a container** from it.
+
+---
+
+## 2. Pull an Image
+
+```bash
+docker pull nginx
+```
+
+Downloads the **image** from the configured Docker Registry.
+
+---
+
+## 3.
+
+```bash
+docker run -d --name my-nginx -p 8080:80 nginx
+```
+
+create container from the image and run it in the background
+
+### Breakdown
+
+```text
+-d
+↓
+Run container in detached/background mode
+
+--name my-nginx
+↓
+Give the container the name "my-nginx"
+
+-p 8080:80
+↓
+Map host port 8080 → container port 80
+
+nginx
+↓
+Docker image to use
+```
+
+You can then access Nginx at:
+
+```text
+http://localhost:8080
+```
+
+---
+
+## 4. View Container Logs
+
+```bash
+docker logs my-nginx
+```
+
+Displays the logs generated by the container.
+
+---
+
+## 5. List Running Containers
+
+```bash
+docker ps
+```
+
+Shows currently running containers.
+
+To show **all containers**, including stopped containers:
+
+```bash
+docker ps -a
+```
+
+---
+
+## 6. Start a Stopped Container
+
+```bash
+docker start my-nginx
+```
+
+Starts an existing stopped container.
+
+---
+
+## 7. Stop a Container
+
+```bash
+docker stop my-nginx
+```
+
+Stops the running container.
+
+---
+
+## 8. Remove a Container
+
+```bash
+docker rm my-nginx
+```
+
+Removes the container.
+
+**Important:** A running container cannot normally be removed with `docker rm`. Stop it first:
+
+```bash
+docker stop my-nginx
+docker rm my-nginx
+```
+
+Alternatively, force removal:
+
+```bash
+docker rm -f my-nginx
+```
+
+---
+
+#############################
+
+#############################
 
 # Essential Docker Commands
 
@@ -213,7 +405,7 @@ docker pull ubuntu:20.04
 docker pull node:16
 ```
 
-***
+---
 
 ## 2. Docker Images Command
 
@@ -233,7 +425,7 @@ hello-world   latest    feb5d9fea6a5   2 years ago    13.3kB
 ubuntu        latest    ba6acccedd29   2 months ago   72.8MB
 ```
 
-***
+---
 
 ## 3. Docker Run Command
 
@@ -255,18 +447,18 @@ docker run nginx
 
 > **Important:** `docker run` always creates a **NEW** container, even if one already exists.
 
-***
+---
 
 # Working with Images
 
 ## Image Properties
 
-* **Repository** — Image name (e.g., `ubuntu`, `hello-world`)
-* **Tag** — Version identifier (e.g., `latest`, `v16`, `20.04`)
-* **Image ID** — Unique identifier
-* **Size** — Storage space used
+- **Repository** — Image name (e.g., `ubuntu`, `hello-world`)
+- **Tag** — Version identifier (e.g., `latest`, `v16`, `20.04`)
+- **Image ID** — Unique identifier
+- **Size** — Storage space used
 
-***
+---
 
 ## Example: Hello World Image
 
@@ -284,7 +476,7 @@ docker run hello-world
 # 4. Container executed and produced output
 ```
 
-***
+---
 
 # Working with Containers
 
@@ -296,11 +488,11 @@ Image → docker run → Container (Running) → Exit → Container (Stopped)
 
 ## Container States
 
-* **Running** — Currently executing
-* **Stopped/Exited** — Finished execution
-* **Paused** — Temporarily suspended
+- **Running** — Currently executing
+- **Stopped/Exited** — Finished execution
+- **Paused** — Temporarily suspended
 
-***
+---
 
 ## Viewing Containers
 
@@ -324,7 +516,7 @@ abc123def456   ubuntu        "/bin/bash"   2 minutes ago   Exited (0) 1 minute a
 789ghi012jkl   hello-world   "/hello"      5 minutes ago   Exited (0) 5 minutes ago   wonderful_darwin
 ```
 
-***
+---
 
 # Interactive Mode
 
@@ -348,7 +540,7 @@ docker run -it ubuntu
 -t : Allocate pseudo-TTY (terminal)
 ```
 
-***
+---
 
 ## Inside Container Environment
 
@@ -368,21 +560,21 @@ exit
 
 ### Key Points
 
-* Container has isolated file system
-* Changes inside container don't affect host
-* Container stops when you exit interactive mode
-* Each container gets unique ID and random name
+- Container has isolated file system
+- Changes inside container don't affect host
+- Container stops when you exit interactive mode
+- Each container gets unique ID and random name
 
-***
+---
 
 # Detached Mode and Attached Mode
 
 Docker containers can run in two primary modes:
 
-* **Attached mode** (also known as foreground mode)
-* **Detached mode** (also known as background mode)
+- **Attached mode** (also known as foreground mode)
+- **Detached mode** (also known as background mode)
 
-***
+---
 
 ## Attached Mode
 
@@ -398,7 +590,7 @@ By default, `docker run` starts a container in attached mode unless specified ot
 docker run nginx
 ```
 
-***
+---
 
 ## Detached Mode
 
@@ -418,7 +610,7 @@ docker run -d nginx
 
 This command starts an Nginx web server in a container in the background. You will receive the container ID as confirmation, and your terminal will be available for other tasks.
 
-***
+---
 
 ## Attaching to and Detaching from a Detached Container
 
@@ -436,13 +628,13 @@ To detach from a container without stopping it, you typically use the key sequen
 Ctrl+P followed by Ctrl+Q
 ```
 
-***
+---
 
 # Difference Between Virtual Machines and Docker Containers
 
 VMs are heavy, fully isolated machines with their own OS; Docker containers are lightweight, share the host OS kernel, and run applications faster with minimal resources.
 
-***
+---
 
 # What Is an Operating System (OS) Kernel?
 
@@ -463,7 +655,7 @@ Hardware
 (CPU, RAM, Disk)
 ```
 
-***
+---
 
 # What Actually Happens When You Pull a Docker Image?
 
@@ -477,7 +669,7 @@ It's like:
 
 > "A fake mini Ubuntu that looks and behaves like Ubuntu inside, but borrows the kernel from your host machine."
 
-***
+---
 
 ## How It Actually Runs
 
@@ -492,7 +684,7 @@ Ubuntu 22.04
 
 …but it's not actually Ubuntu OS — it's your host's Linux kernel + Ubuntu's userland.
 
-***
+---
 
 # In Case of macOS
 
@@ -504,7 +696,7 @@ Ubuntu 22.04
 
 When you start Docker Desktop:
 
-***
+---
 
 # Container Management
 
@@ -529,7 +721,7 @@ docker start mystifying_tesla
 docker start abc123def456
 ```
 
-***
+---
 
 ## Stopping Running Containers
 
@@ -552,17 +744,17 @@ docker stop mystifying_tesla
 docker stop abc123def456
 ```
 
-***
+---
 
 ## Key Differences
 
 | Command        | Purpose                          | Creates New Container? |
 | -------------- | -------------------------------- | ---------------------- |
-| `docker run`   | Create and start new container   | ✅ Yes                  |
-| `docker start` | Start existing stopped container | ❌ No                   |
-| `docker stop`  | Stop running container           | ❌ No                   |
+| `docker run`   | Create and start new container   | ✅ Yes                 |
+| `docker start` | Start existing stopped container | ❌ No                  |
+| `docker stop`  | Stop running container           | ❌ No                  |
 
-***
+---
 
 # Container Management Workflow
 
@@ -584,7 +776,7 @@ docker start <container-name>
 docker stop <container-name>
 ```
 
-***
+---
 
 # Practical Examples
 
@@ -604,7 +796,7 @@ docker images
 docker ps -a
 ```
 
-***
+---
 
 ## Example 2: Ubuntu Interactive Container
 
@@ -624,7 +816,7 @@ root@container:/# exit
 docker ps -a
 ```
 
-***
+---
 
 ## Example 3: Container Lifecycle Management
 
@@ -643,38 +835,38 @@ docker stop tender_newton
 docker ps
 ```
 
-***
+---
 
 # Docker Desktop Usage
 
 ## Containers Tab
 
-* View all containers (running/stopped)
-* See container status, names, IDs
-* Start/stop containers with GUI
-* Access container logs and stats
+- View all containers (running/stopped)
+- See container status, names, IDs
+- Start/stop containers with GUI
+- Access container logs and stats
 
-***
+---
 
 ## Images Tab
 
-* View all downloaded images
-* See image sizes, tags, IDs
-* Green dot indicates image is being used by containers
-* Delete unused images
+- View all downloaded images
+- See image sizes, tags, IDs
+- Green dot indicates image is being used by containers
+- Delete unused images
 
-***
+---
 
 ## Container Details
 
 Click a container to see detailed information:
 
-* View logs
-* View environment variables
-* Access file system (in some cases)
-* Monitor resource usage
+- View logs
+- View environment variables
+- Access file system (in some cases)
+- Monitor resource usage
 
-***
+---
 
 # Best Practices
 
@@ -691,7 +883,7 @@ docker rmi <image-name>
 docker pull ubuntu:20.04
 ```
 
-***
+---
 
 ## 2. Container Naming
 
@@ -702,7 +894,7 @@ docker run --name my-ubuntu -it ubuntu
 docker run --name my-app-container -it node:16
 ```
 
-***
+---
 
 ## 3. Resource Cleanup
 
@@ -724,31 +916,31 @@ docker container prune
 docker image prune
 ```
 
-***
+---
 
 # What's Next?
 
 This transcript covered the fundamental concepts of Docker. Future topics will include:
 
-* Dockerization of custom applications
-* Dockerfile creation and best practices
-* Port mapping and networking
-* Environment variables
-* Volume mounting
-* Docker Compose for multi-container applications
-* Docker networking concepts
-* Container troubleshooting
+- Dockerization of custom applications
+- Dockerfile creation and best practices
+- Port mapping and networking
+- Environment variables
+- Volume mounting
+- Docker Compose for multi-container applications
+- Docker networking concepts
+- Container troubleshooting
 
-***
+---
 
 # Summary
 
 Docker solves the **"It works on my machine"** problem by:
 
-* Packaging applications with their dependencies
-* Standardizing deployment across environments
-* Isolating applications in lightweight containers
-* Simplifying team collaboration and deployment
+- Packaging applications with their dependencies
+- Standardizing deployment across environments
+- Isolating applications in lightweight containers
+- Simplifying team collaboration and deployment
 
 ## Key Components
 
