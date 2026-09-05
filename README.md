@@ -7,7 +7,7 @@ A personal playground to document and practice my Node.js learning journey — f
 </p>
 
 <div align="center">
-  <img src="./01_node_module_system/banner.png" alt="Banner" width="900">
+  <img src="./01_node_module_system/banner.jpg" alt="Banner" width="900">
 </div>
 
 ---
