@@ -255,7 +255,7 @@ A Docker image can be created from a Dockerfile or downloaded from Docker Hub, a
 
 # Basic Docker Commands
 
-## 1.
+## 1. Run a Container
 
 ```bash
 docker run hello-world
@@ -275,7 +275,7 @@ Downloads the **image** from the configured Docker Registry.
 
 ---
 
-## 3.
+## 3. Run a Container in the Background
 
 ```bash
 docker run -d --name my-nginx -p 8080:80 nginx
@@ -374,7 +374,7 @@ docker rm my-nginx
 
 Alternatively, force removal:
 
-```bash
+```bash 
 docker rm -f my-nginx
 ```
 
