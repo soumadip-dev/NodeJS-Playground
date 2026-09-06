@@ -143,3 +143,189 @@ These two cases are different:
 - **Frontend build config** → embedded when the frontend is built.
 
 ---
+
+# Dockerizing the MERN App — Practical Implementation
+
+## 1. Create the Backend Dockerfile
+
+Create:
+
+```text
+server/Dockerfile
+```
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 5000
+
+CMD ["npm", "start"]
+```
+
+### What this Dockerfile does
+
+- Starts from a Node.js 20 Alpine base image.
+- Creates `/app` as the working directory.
+- Copies the package files.
+- Installs the dependencies.
+- Copies the backend source code.
+- Builds the TypeScript output.
+- Documents port `5000`.
+- Starts the backend using the default `npm start` command.
+
+---
+
+## 2. Add `.dockerignore` for the Backend
+
+The `.dockerignore` file prevents unnecessary files from being sent to the Docker build context.
+
+Example:
+
+```text
+node_modules
+dist
+.env
+.git
+npm-debug.log
+```
+
+## 3. Build the Backend Image
+
+Run:
+
+```bash
+docker build -t docker-demo-server ./server
+```
+
+Here:
+
+- `docker build` → builds a Docker image.
+- `-t docker-demo-server` → gives the image a name/tag.
+- `./server` → specifies the backend directory as the build context.
+
+---
+
+## 4. Run a Backend Container
+
+Run:
+
+```bash
+docker run -d --name server -e PORT=<port from .env> - e MONGODB_URI="<url from .env>" -p 5000:5000 docker-demo-server
+```
+
+### Command breakdown
+
+- `-d` → runs the container in detached mode, so it runs in the background.
+- `--name server` → gives the container the name `server`.
+- `-e` → passes an environment variable to the container.
+- `-p 5000:5000` → maps the host port `5000` to the container port `5000`.
+- `docker-demo-server` → specifies the Docker image to use.
+
+### Port Mapping
+
+```text
+-p 5000:5000
+   │     │
+   │     └── Container port (set in the Dockerfile)
+   └──────── Host port (the port we want to run on)
+```
+
+---
+
+## 5. Create the Frontend Dockerfile
+
+Create:
+
+```text
+client/Dockerfile
+```
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+ARG VITE_API_URL=http://localhost:5000
+ENV VITE_API_URL=$VITE_API_URL
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 5173
+
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
+```
+
+### What this Dockerfile does
+
+- Starts from a Node.js 20 Alpine base image.
+- Accepts a build-time frontend API URL.
+- Sets the API URL as an environment variable.
+- Copies the package files.
+- Installs frontend dependencies.
+- Copies the Vite source code.
+- Builds the production bundle.
+- Documents port `5173`.
+- Starts Vite Preview on port `5173`.
+
+> The Vite frontend needs its API URL during the build. That is why `ARG` and `ENV` are used inside the Dockerfile.
+
+---
+
+## 6. Add `.dockerignore` for the Frontend
+
+Same as the backend, create a `.dockerignore` file in the frontend directory.
+
+---
+
+## 7. Build the Frontend Image
+
+Run:
+
+```bash
+docker build --build-arg VITE_API_URL=http://localhost:5000 -t docker-demo-client ./client
+```
+
+Here:
+
+- `--build-arg VITE_API_URL=...` → provides the frontend API URL during image build.
+- `-t docker-demo-client` → gives the image a name/tag.
+- `./client` → specifies the frontend directory as the build context.
+
+---
+
+## 8. Run the Frontend Container
+
+Run:
+
+```bash
+docker run -d --name client -p 5173:5173 docker-demo-client
+```
+
+Here:
+
+- `-d` → runs the container in detached mode.
+- `--name client` → gives the container the name `client`.
+- `-p 5173:5173` → maps host port `5173` to container port `5173`.
+- `docker-demo-client` → specifies the Docker image to use.
+
+The frontend can then be accessed through:
+
+```text
+http://localhost:5173
+```
