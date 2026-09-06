@@ -146,7 +146,105 @@ These two cases are different:
 
 # Dockerizing the MERN App — Practical Implementation
 
-## 1. Create the Backend Dockerfile
+## 1. Set Up MongoDB with Docker
+
+For MongoDB, you can use the official MongoDB image:
+
+```text
+mongo:8
+```
+
+### What Is a Docker Volume?
+
+A Docker container is temporary. If you delete the container:
+
+```bash
+docker rm mongo
+```
+
+anything stored only inside the container can be lost.
+
+MongoDB stores its database files inside:
+
+```text
+/data/db
+```
+
+A Docker volume allows the database files to persist independently of the container.
+
+```text
+Docker Volume                  Container
+
+mongo-data  ───────────────→  /data/db
+                                  ↑
+                              MongoDB
+```
+
+The volume exists independently of the container.
+
+For example:
+
+```text
+Container 1 → mongo-data → Container deleted
+
+mongo-data still exists → Container 2 → same mongo-data → old database comes back
+```
+
+### Create the MongoDB Volume
+
+Create a Docker volume named `mongo-data`:
+
+```bash
+docker volume create mongo-data
+```
+
+### Check the Available Volumes
+
+To check the available Docker volumes:
+
+```bash
+docker volume ls
+```
+
+### Inspect the MongoDB Volume
+
+Docker will show information about the volume, including where Docker stores it internally.
+
+```bash
+docker volume inspect mongo-data
+```
+
+### Create the MongoDB Container
+
+Create and run the MongoDB container using the `mongo-data` volume:
+
+```bash
+docker run -d --name mongo --mount source=mongo-data,target=/data/db -p 27017:27017 mongo:8
+```
+
+Here:
+
+- `-d` → runs the container in detached mode.
+- `--name mongo` → gives the container the name `mongo`.
+- `--mount source=mongo-data,target=/data/db` → mounts the `mongo-data` volume to MongoDB's data directory.
+- `-p 27017:27017` → maps host port `27017` to container port `27017`.
+- `mongo:8` → specifies the MongoDB image to use.
+
+### Connect to MongoDB
+
+The MongoDB connection URI from the host machine is:
+
+```text
+mongodb://localhost:27017
+```
+
+> You can connect to MongoDB using **MongoDB Compass** with this URI.
+
+---
+
+## 2. Dockerize the Backend
+
+### Create the Backend Dockerfile
 
 Create:
 
@@ -172,7 +270,7 @@ EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-### What this Dockerfile does
+### What This Dockerfile Does
 
 - Starts from a Node.js 20 Alpine base image.
 - Creates `/app` as the working directory.
@@ -183,11 +281,15 @@ CMD ["npm", "start"]
 - Documents port `5000`.
 - Starts the backend using the default `npm start` command.
 
----
-
-## 2. Add `.dockerignore` for the Backend
+### Add `.dockerignore` for the Backend
 
 The `.dockerignore` file prevents unnecessary files from being sent to the Docker build context.
+
+Create:
+
+```text
+server/.dockerignore
+```
 
 Example:
 
@@ -199,7 +301,7 @@ dist
 npm-debug.log
 ```
 
-## 3. Build the Backend Image
+### Build the Backend Image
 
 Run:
 
@@ -213,22 +315,23 @@ Here:
 - `-t docker-demo-server` → gives the image a name/tag.
 - `./server` → specifies the backend directory as the build context.
 
----
-
-## 4. Run a Backend Container
+### Run the Backend Container
 
 Run:
 
 ```bash
-docker run -d --name server -e PORT=<port from .env> - e MONGODB_URI="<url from .env>" -p 5000:5000 docker-demo-server
+docker run -d --name server -e PORT=5000 -e MONGODB_URI="mongodb://host.docker.internal:27017/temp" -p 5000:5000 docker-demo-server
 ```
 
-### Command breakdown
+> If you think the MongoDB URL is `mongodb://localhost:27017`, then where does `mongodb://host.docker.internal:27017` come from? `localhost` refers to the **current container**, while `host.docker.internal` is a special Docker hostname that refers to the **host machine (your computer)**.
 
-- `-d` → runs the container in detached mode, so it runs in the background.
+Here:
+
+- `-d` → runs the container in detached mode.
 - `--name server` → gives the container the name `server`.
-- `-e` → passes an environment variable to the container.
-- `-p 5000:5000` → maps the host port `5000` to the container port `5000`.
+- `-e PORT=5000` → passes the `PORT` environment variable to the container.
+- `-e MONGODB_URI=...` → passes the MongoDB connection string to the container.
+- `-p 5000:5000` → maps host port `5000` to container port `5000`.
 - `docker-demo-server` → specifies the Docker image to use.
 
 ### Port Mapping
@@ -242,7 +345,9 @@ docker run -d --name server -e PORT=<port from .env> - e MONGODB_URI="<url from 
 
 ---
 
-## 5. Create the Frontend Dockerfile
+## 3. Dockerize the Frontend
+
+### Create the Frontend Dockerfile
 
 Create:
 
@@ -271,7 +376,7 @@ EXPOSE 5173
 CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
 ```
 
-### What this Dockerfile does
+### What This Dockerfile Does
 
 - Starts from a Node.js 20 Alpine base image.
 - Accepts a build-time frontend API URL.
@@ -285,15 +390,17 @@ CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
 
 > The Vite frontend needs its API URL during the build. That is why `ARG` and `ENV` are used inside the Dockerfile.
 
----
+### Add `.dockerignore` for the Frontend
 
-## 6. Add `.dockerignore` for the Frontend
+As with the backend, create a `.dockerignore` file in the frontend directory.
 
-Same as the backend, create a `.dockerignore` file in the frontend directory.
+Create:
 
----
+```text
+client/.dockerignore
+```
 
-## 7. Build the Frontend Image
+### Build the Frontend Image
 
 Run:
 
@@ -303,13 +410,11 @@ docker build --build-arg VITE_API_URL=http://localhost:5000 -t docker-demo-clien
 
 Here:
 
-- `--build-arg VITE_API_URL=...` → provides the frontend API URL during image build.
+- `--build-arg VITE_API_URL=...` → provides the frontend API URL during the image build.
 - `-t docker-demo-client` → gives the image a name/tag.
 - `./client` → specifies the frontend directory as the build context.
 
----
-
-## 8. Run the Frontend Container
+### Run the Frontend Container
 
 Run:
 
