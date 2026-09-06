@@ -434,3 +434,291 @@ The frontend can then be accessed through:
 ```text
 http://localhost:5173
 ```
+
+---
+
+# 4. Run the MERN App with Docker Compose
+
+When using Docker commands individually, you need to:
+
+- Run the MongoDB container.
+- Run the backend container.
+- Run the frontend container.
+- Pass environment variables manually.
+- Rebuild images when the application changes.
+- Manage the containers individually.
+
+This becomes repetitive and difficult to manage as the application grows.
+
+### Solution: Docker Compose
+
+**Docker Compose** solves this problem by allowing you to define the entire multi-container application in a single configuration file.
+
+A Compose file lets you describe:
+
+- Services
+- Build settings
+- Port mappings
+- Environment variables
+- Service dependencies
+- Volumes
+- Networks
+
+In this MERN application, the following are defined as services:
+
+```text
+MongoDB → mongo
+Backend → server
+Frontend → client
+```
+
+Docker Compose can then build and run all the required services together with a single command.
+
+### Create the Compose File
+
+Create a `docker-compose.yml` file in the root directory of the project:
+
+```text
+project/
+├── client/
+├── server/
+├── docker-compose.yml
+└── .env
+```
+
+Add the following configuration:
+
+```yaml
+services:
+  mongo:
+    image: mongo:8
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+
+  server:
+    build:
+      context: ./server
+    environment:
+      PORT: ${SERVER_PORT}
+      MONGODB_URI: ${MONGODB_URI}
+    depends_on:
+      - mongo
+    ports:
+      - '${SERVER_PORT}:${SERVER_PORT}'
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    depends_on:
+      - server
+    ports:
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+
+volumes:
+  mongo-data:
+```
+
+### Compose File Breakdown
+
+#### `services`
+
+The `services` section defines the containers that make up the application.
+
+In this application, there are three services:
+
+```text
+mongo
+server
+client
+```
+
+Each service represents a container that Docker Compose manages.
+
+#### `mongo`
+
+```yaml
+mongo:
+  image: mongo:8
+  volumes:
+    - mongo-data:/data/db
+  ports:
+    - '27017:27017'
+```
+
+- `image: mongo:8` → uses the MongoDB 8 image.
+- `volumes` → persists MongoDB data using the `mongo-data` volume.
+- `ports` → maps host port `27017` to container port `27017`.
+
+#### `server`
+
+```yaml
+server:
+  build:
+    context: ./server
+  environment:
+    PORT: ${SERVER_PORT}
+    MONGODB_URI: ${MONGODB_URI}
+  depends_on:
+    - mongo
+  ports:
+    - '${SERVER_PORT}:${SERVER_PORT}'
+```
+
+- `build.context: ./server` → builds the backend image using the `server` directory.
+- `environment` → passes environment variables to the backend container.
+- `depends_on` → tells Compose that the backend depends on the MongoDB service.
+- `ports` → maps the backend port from the host to the container.
+
+#### `client`
+
+```yaml
+client:
+  build:
+    context: ./client
+    args:
+      VITE_API_URL: ${VITE_API_URL}
+  depends_on:
+    - server
+  ports:
+    - '${CLIENT_PORT}:${CLIENT_PORT}'
+```
+
+- `build.context: ./client` → builds the frontend image using the `client` directory.
+- `build.args` → passes `VITE_API_URL` as a build argument.
+- `depends_on` → tells Compose that the frontend depends on the backend service.
+- `ports` → maps the frontend port from the host to the container.
+
+#### `volumes`
+
+```yaml
+volumes:
+  mongo-data:
+```
+
+This declares the named Docker volume used by the MongoDB service.
+
+The volume persists even if the MongoDB container is removed.
+
+### Configure Environment Variables
+
+Docker Compose automatically looks for a file named `.env` in the same directory as the `docker-compose.yml` file.
+
+Create:
+
+```text
+.env
+```
+
+in the project root:
+
+```text
+SERVER_PORT=5000
+CLIENT_PORT=5173
+MONGODB_URI=mongodb://mongo:27017/temp
+VITE_API_URL=http://localhost:5000
+```
+
+The variables from `.env` are referenced in the Compose file using:
+
+```text
+${VARIABLE_NAME}
+```
+
+For example:
+
+```yaml
+PORT: ${SERVER_PORT}
+```
+
+Docker Compose replaces `${SERVER_PORT}` with the value from `.env`.
+
+#### Why Is the MongoDB URI `mongodb://mongo:27017/temp`?
+
+Notice that the MongoDB URI is:
+
+```text
+mongodb://mongo:27017/temp
+```
+
+instead of:
+
+```text
+mongodb://localhost:27017/temp
+```
+
+Docker Compose automatically creates a network for the services in the application.
+
+Containers on this network can communicate with each other using their **service names**.
+
+Since the MongoDB service is named `mongo`, the backend can connect to MongoDB using:
+
+```text
+mongodb://mongo:27017/temp
+```
+
+The communication looks like this:
+
+```text
+server container
+      │
+      │ mongodb://mongo:27017/temp
+      ▼
+mongo container
+```
+
+Here, `mongo` is resolved to the MongoDB container by Docker's internal service discovery.
+
+> `localhost` inside the `server` container refers to the `server` container itself, not the MongoDB container. Therefore, the backend should use the MongoDB service name (`mongo`) when connecting through the Compose network.
+
+### Start the MERN Application
+
+Build the images and start all services with:
+
+```bash
+docker compose up -d --build
+```
+
+Here:
+
+- `docker compose` → runs Docker Compose.
+- `up` → creates and starts the services.
+- `-d` → runs the services in detached mode.
+- `--build` → rebuilds the images before starting the containers.
+
+This single command replaces the need to manually:
+
+```text
+Build MongoDB
+      ↓
+Run MongoDB
+      ↓
+Build Backend
+      ↓
+Run Backend
+      ↓
+Build Frontend
+      ↓
+Run Frontend
+```
+
+Docker Compose manages all three services together.
+
+### Check Application Logs
+
+To view logs from all services:
+
+```bash
+docker compose logs
+```
+
+To view logs from a specific service:
+
+```bash
+docker compose logs server
+```
+
+---
