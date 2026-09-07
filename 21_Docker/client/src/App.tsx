@@ -23,7 +23,8 @@ export default function App() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const totalProducts = useMemo(() => products.length, [products]);
+  const totalProducts = products.length;
+
   const totalValue = useMemo(() => {
     return products.reduce((sum, product) => sum + product.price, 0);
   }, [products]);
@@ -35,8 +36,8 @@ export default function App() {
 
       const response = await api.get<Product[]>('/products');
       setProducts(response.data);
-    } catch (err) {
-      setError('Could not load products. Please check backend and database.');
+    } catch {
+      setError('Unable to load products. Please make sure the backend and database are running.');
     } finally {
       setLoading(false);
     }
@@ -54,17 +55,18 @@ export default function App() {
       setError('');
 
       await api.post('/products', {
-        name,
+        name: name.trim(),
         price: Number(price),
-        category,
+        category: category.trim(),
       });
 
       setName('');
       setPrice('');
       setCategory('');
-      fetchProducts();
-    } catch (err) {
-      setError('Could not create product. Please check your input.');
+
+      await fetchProducts();
+    } catch {
+      setError('Unable to add the product. Please check your input.');
     } finally {
       setSubmitting(false);
     }
@@ -73,10 +75,11 @@ export default function App() {
   const handleDelete = async (id: string) => {
     try {
       setError('');
+
       await api.delete(`/products/${id}`);
-      fetchProducts();
-    } catch (err) {
-      setError('Could not delete product.');
+      await fetchProducts();
+    } catch {
+      setError('Unable to delete the product. Please try again.');
     }
   };
 
@@ -84,89 +87,152 @@ export default function App() {
     <div className="page">
       <div className="container">
         <header className="hero">
-          <div>
-            <p className="eyebrow">Docker Course Demo App</p>
+          <div className="hero-content">
+            <span className="eyebrow">Docker Learning Project</span>
+
             <h1>MERN Product Dashboard</h1>
+
             <p className="hero-text">
-              This app is intentionally small so the course can stay focused on Docker, Compose, VPS
-              deployment, and GitLab CI/CD.
+              A simple full-stack application built with MongoDB, Express, React, and Node.js. This
+              project is used to learn how to containerize a MERN application with Docker and Docker
+              Compose.
             </p>
           </div>
 
           <div className="stats">
             <div className="stat-card">
-              <span className="stat-label">Products</span>
-              <strong>{totalProducts}</strong>
+              <span className="stat-icon">▦</span>
+              <div>
+                <span className="stat-label">Products</span>
+                <strong>{totalProducts}</strong>
+              </div>
             </div>
 
             <div className="stat-card">
-              <span className="stat-label">Total Value</span>
-              <strong>₹{totalValue.toLocaleString()}</strong>
+              <span className="stat-icon">₹</span>
+              <div>
+                <span className="stat-label">Total Value</span>
+                <strong>₹{totalValue.toLocaleString('en-IN')}</strong>
+              </div>
             </div>
           </div>
         </header>
 
-        <section className="grid">
-          <div className="card">
-            <h2>Add Product</h2>
-            <p className="muted">Add a few items to verify React → Express → MongoDB flow.</p>
+        <main className="grid">
+          <section className="card add-card">
+            <div className="card-header">
+              <div>
+                <span className="section-number">01</span>
+                <h2>Add Product</h2>
+              </div>
+            </div>
+
+            <p className="muted">Add a product to test the React → Express → MongoDB flow.</p>
 
             <form className="form" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                placeholder="Product name"
-                value={name}
-                onChange={event => setName(event.target.value)}
-                required
-              />
+              <div className="field">
+                <label htmlFor="name">Product Name</label>
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="e.g. Wireless Keyboard"
+                  value={name}
+                  onChange={event => setName(event.target.value)}
+                  required
+                />
+              </div>
 
-              <input
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={event => setPrice(event.target.value)}
-                min="0"
-                required
-              />
+              <div className="field">
+                <label htmlFor="price">Price</label>
+                <div className="input-wrapper">
+                  <span>₹</span>
+                  <input
+                    id="price"
+                    type="number"
+                    placeholder="0"
+                    value={price}
+                    onChange={event => setPrice(event.target.value)}
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
 
-              <input
-                type="text"
-                placeholder="Category"
-                value={category}
-                onChange={event => setCategory(event.target.value)}
-                required
-              />
+              <div className="field">
+                <label htmlFor="category">Category</label>
+                <input
+                  id="category"
+                  type="text"
+                  placeholder="e.g. Electronics"
+                  value={category}
+                  onChange={event => setCategory(event.target.value)}
+                  required
+                />
+              </div>
 
-              <button type="submit" disabled={submitting}>
-                {submitting ? 'Saving...' : 'Add Product'}
+              <button className="primary-button" type="submit" disabled={submitting}>
+                {submitting ? (
+                  <>
+                    <span className="spinner" />
+                    Adding Product...
+                  </>
+                ) : (
+                  <>
+                    <span>+</span>
+                    Add Product
+                  </>
+                )}
               </button>
             </form>
-          </div>
+          </section>
 
-          <div className="card">
-            <h2>Product List</h2>
-            <p className="muted">
-              Later in the course, this same app will run through Docker containers and Compose.
-            </p>
+          <section className="card products-card">
+            <div className="card-header products-header">
+              <div>
+                <span className="section-number">02</span>
+                <h2>Product List</h2>
+              </div>
+
+              <span className="count-badge">
+                {totalProducts} {totalProducts === 1 ? 'item' : 'items'}
+              </span>
+            </div>
+
+            <p className="muted">Manage the products stored in your MongoDB database.</p>
 
             {loading ? (
-              <div className="empty-state">Loading products...</div>
+              <div className="empty-state">
+                <span className="spinner dark-spinner" />
+                <span>Loading products...</span>
+              </div>
             ) : products.length === 0 ? (
               <div className="empty-state">
-                No products yet. Add your first product from the form.
+                <div className="empty-icon">+</div>
+                <strong>No products yet</strong>
+                <span>Add your first product using the form.</span>
               </div>
             ) : (
               <div className="product-list">
                 {products.map(product => (
                   <div className="product-card" key={product._id}>
-                    <div>
-                      <h3>{product.name}</h3>
-                      <p>{product.category}</p>
+                    <div className="product-info">
+                      <div className="product-icon">{product.name.charAt(0).toUpperCase()}</div>
+
+                      <div>
+                        <h3>{product.name}</h3>
+                        <span className="category">{product.category}</span>
+                      </div>
                     </div>
 
                     <div className="product-meta">
-                      <strong>₹{product.price.toLocaleString()}</strong>
-                      <button className="danger-button" onClick={() => handleDelete(product._id)}>
+                      <strong>₹{product.price.toLocaleString('en-IN')}</strong>
+
+                      <button
+                        className="danger-button"
+                        onClick={() => handleDelete(product._id)}
+                        type="button"
+                      >
                         Delete
                       </button>
                     </div>
@@ -174,10 +240,16 @@ export default function App() {
                 ))}
               </div>
             )}
-          </div>
-        </section>
+          </section>
+        </main>
 
-        {error ? <div className="error-box">{error}</div> : null}
+        {error && <div className="error-box">{error}</div>}
+
+        <footer className="footer">
+          <span>MERN Stack</span>
+          <span>•</span>
+          <span>Docker Learning Project</span>
+        </footer>
       </div>
     </div>
   );
