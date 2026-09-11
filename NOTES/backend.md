@@ -210,3 +210,6 @@ https://youtu.be/5fQOQcReSA8
    https://www.udemy.com/course/production-ai-agents-with-javascript-langchain-langgraph/?couponCode=CP260817G1
 
 \*\*\* Nothing else.
+
+> LEARN CI/CD -> from coderarmy
+> then here: https://youtu.be/Tq0vZU7Hp_M?t=11877
