@@ -3,54 +3,100 @@
 </h1>
 
 <p align="center">
-A personal playground to document and practice my Node.js learning journey — from fundamentals to advanced core concepts. 🌱  
+  A personal playground for learning and practicing Node.js and backend development. 🌱
 </p>
-
 <div align="center">
-  <img src="./01_node_module_system/banner.jpg" alt="Banner" width="900">
+  <img src="./01_node_module_system/banner.png" alt="Banner" width="900">
 </div>
 
 ---
 
 ## 🔋 Contents
 
-This repository covers a wide range of Node.js topics with notes, examples, and hands-on practice:
+This repository contains structured notes, examples, experiments, and hands-on implementations covering Node.js, backend development, databases, system design, and DevOps.
 
-- 🧠 Core Node.js concepts and internal workings
-- 🧪 Built-in modules with real-world examples
-- 🔧 Hands-on exercises and practice code
-- 🗃️ Mini experiments and feature implementations
+### 🧠 Core Node.js
 
-### 📦 Technologies & Topics
+- 📦 Module System
+- 📍 Path Module
+- 📂 File System (`fs`)
+- 🌐 HTTP Module
+- 🎯 EventEmitter
+- 🔄 Event Loop
+- 🧱 Buffers
+- 🌊 Streams
+- 📞 Callbacks
+- 🤝 Promises
+- ⚡ Async/Await
 
-- ⚡ Express.js
-- 🎨 EJS templating
-- 🌐 REST APIs
+### 🛠️ Backend Development
+
+- 🚂 Express.js
+- 🎨 EJS Templating
+- 🔗 REST APIs
 - 🔐 Authentication & Authorization
-- 🍃 MongoDB & Mongoose
-- 🐘 PostgreSQL with Prisma & Drizzle
-- 🧩 TypeScript with Node.js
-- 🔌 WebSockets
-- 🧬 GraphQL with Apollo
-- 🥟 Bun runtime
+- 🖼️ File & Image Uploads
+- 🟦 TypeScript with Node.js
+
+### 🗄️ Databases & Caching
+
+- 🍃 MongoDB
+- 🧩 Mongoose
+- 🐘 PostgreSQL
+- 🔷 Prisma
+- ⚡ Redis
+
+### 🔌 Real-Time & APIs
+
+- 📡 WebSockets with Socket.io
+- 🕸️ GraphQL with Apollo
+
+### 🐳 DevOps
+
+- 🐋 Docker
+- 🐧 Linux
+
+### 🏗️ System Design
+
+- 🌍 DNS
+- 📈 Backend Scaling
+- 🔥 Hot Partitions
+- 🌸 Bloom Filter
 
 ---
 
 ## 🎯 Purpose
 
-The goal of this repository is to build a **strong and practical understanding of Node.js**, explore its ecosystem in depth, and maintain a **structured, consistent learning path**. 📈  
-It serves as both a **learning journal** 📒 and a **reference playground** 🛠️ for future projects.
+This repository helps me build a **strong practical foundation in Node.js and backend development** through learning, experimentation, and hands-on practice.
+
+It serves as a **learning journal** 📒 and **reference playground** 🛠️ for future projects and revision.
 
 ---
 
 ## 📒 Notes
 
-Well-structured notes for quick reference and revision:
+Well-structured notes for quick reference and revision across different backend engineering topics.
 
-- 📘 [Node.js Module System](/NOTES/01_Module_System.md)
-- 📁 [Path Module](/NOTES/02_Path_module_system.md)
-- 📂 [`fs` Module](/NOTES/03_fs_module_system.md)
-- 🌐 [`http` Module](/NOTES/04_http_module_system.md)
+### 📗 Node.js
+
+- [Node.js Module System](./NOTES/nodejs/01-module-system.md)
+- [Path Module](./NOTES/nodejs/02-path-module-system.md)
+- [`fs` Module](./NOTES/nodejs/03-fs-module-system.md)
+- [`http` Module](./NOTES/nodejs/04-http-module-system.md)
+- [Single Image Upload](./NOTES/nodejs/05-single-image-upload.md)
+
+### 🐳 DevOps
+
+- [Docker Introduction](./NOTES/devops/docker/01-docker-introduction.md)
+- [Docker MERN Setup](./NOTES/devops/docker/02-docker-mern-setup.md)
+- [Docker Production Images](./NOTES/devops/docker/03-docker-production-images.md)
+- [Linux Basics](./NOTES/devops/linux/index.md)
+
+### 🏗️ System Design
+
+- [DNS & Backend Scaling](./NOTES/system-design/01-dns-and-backend-scaling.md)
+- [Hot Partitions](./NOTES/system-design/02-hot-partitions.md)
+- [Bloom Filter](./NOTES/system-design/03-bloom-filter.md)
 
 ---
 
@@ -59,4 +105,10 @@ Well-structured notes for quick reference and revision:
 ```bash
 git clone https://github.com/soumadip-dev/NodeJS-Playground.git
 cd NodeJS-Playground
+
+# Navigate to a specific project folder
+cd 08_Express
+
+# Install dependencies
+npm install
 ```
